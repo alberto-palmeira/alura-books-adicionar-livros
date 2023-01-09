@@ -13,6 +13,3 @@ async function getBuscarLivrosEndPoint () {
 let livros = [];
 const endPointApi = 'https://guilhermeonrails.github.io/casadocodigo/livros.json';
 getBuscarLivrosEndPoint();
-const botoesFiltro = document.querySelectorAll('.btn');
-const removerFiltro = document.querySelector('body');
-const botaoOrdenaPreco = document.querySelector('#btnOrdenarPorPreco');

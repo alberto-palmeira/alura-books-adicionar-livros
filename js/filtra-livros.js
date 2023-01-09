@@ -3,23 +3,46 @@
 function filtraLivroTema(livros, tipoFiltro) {
     const resultadoFiltro = livros.filter(livro => livro.categoria === tipoFiltro);
 
-    resultadoFiltro.forEach(() => {
-        adicionaElementos(resultadoFiltro);
-    });
+    adicionaElementos(resultadoFiltro);
 };
 
 function filtraLivroQuantidade(livros) {
     const resultadoFiltro = livros.filter(livro => livro.quantidade > 0);
     
-    resultadoFiltro.forEach(() => {
-        adicionaElementos(resultadoFiltro);
-    });
+    adicionaElementos(resultadoFiltro);
 
-    filtroAplicado = resultadoFiltro;
-}
+    listaLivrosFiltroAplicado = resultadoFiltro;
+};
+
+function calculaValorLivrosDisponiveis (livros) {
+    const valorInicial = 0;
+    return livros.reduce((acumulador, valorAtual) => { 
+        return acumulador + valorAtual.preco
+    }, valorInicial);
+};
+
+function aplicaFiltroQuantidade(listaLivros) {
+        filtraLivroQuantidade(listaLivros);
+
+        const valorTotalLivrosDisponiveis = calculaValorLivrosDisponiveis(listaLivrosFiltroAplicado).toFixed(2);
+
+        elementoValorTotalDosLivrosDisponiveis.innerHTML = `
+            <div class="livros__disponiveis">
+            <p>Todos os livros disponíveis por R$ <span id="valor">${valorTotalLivrosDisponiveis}</span></p>
+            </div>
+            `;
+};
+
+function aplicaFiltroPreco(listaLivros) {
+    const livrosOrdenadosPreco = ordenaPrecosCrescentes(listaLivros);
+    adicionaElementos(livrosOrdenadosPreco);
+    listaLivrosFiltroAplicado = livrosOrdenadosPreco;
+};
 
 // ---------- Lógica ----------
-let filtroAplicado = '';
+let listaLivrosFiltroAplicado = '';
+const botoesFiltro = document.querySelectorAll('.btn');
+const elementoValorTotalDosLivrosDisponiveis = document.querySelector('#valor_total_livros_disponiveis');
 
 botoesFiltro.forEach(botao => {
         
@@ -27,33 +50,33 @@ botoesFiltro.forEach(botao => {
         const tipoFiltro = evento.target.value;
         const categoria = ['front-end', 'back-end', 'dados'];
 
-        if (tipoFiltro === 'quantidade') {
-            filtraLivroQuantidade(livros);
+        if (tipoFiltro === 'quantidade' && listaLivrosFiltroAplicado.length == '') {
+            aplicaFiltroQuantidade(livros);
+        } else if (tipoFiltro === 'quantidade' && listaLivrosFiltroAplicado.length > 0) {
+            aplicaFiltroQuantidade(listaLivrosFiltroAplicado);
+        } else {
+            elementoValorTotalDosLivrosDisponiveis.innerHTML = '';
         };
         
-        if (categoria.includes(tipoFiltro) && filtroAplicado.length == ''){
+        if (categoria.includes(tipoFiltro) && listaLivrosFiltroAplicado.length == '') {
             filtraLivroTema(livros, tipoFiltro);
         };
-
-        if (categoria.includes(tipoFiltro) && filtroAplicado.length > 0) {
-            filtraLivroTema(filtroAplicado, tipoFiltro);
-        };
-
-        if (tipoFiltro === 'ordenacao' && filtroAplicado.length == '') {
-            const livrosOrdenados = ordenaPrecosCrescentes(livros);
-            adicionaElementos(livrosOrdenados);
-            filtroAplicado = livrosOrdenados;
-        };
     
-        if (tipoFiltro === 'ordenacao' && filtroAplicado.length > 0) {
-            const livrosOrdenados = ordenaPrecosCrescentes(filtroAplicado);
-            adicionaElementos(livrosOrdenados);
-            filtroAplicado = livrosOrdenados;
+        if (categoria.includes(tipoFiltro) && listaLivrosFiltroAplicado.length > 0) {
+            filtraLivroTema(listaLivrosFiltroAplicado, tipoFiltro);
+        };
+        
+        if (tipoFiltro === 'ordenacao' && listaLivrosFiltroAplicado.length == '') {
+            aplicaFiltroPreco(livros);
         };
 
+        if (tipoFiltro === 'ordenacao' && listaLivrosFiltroAplicado.length > 0) {
+            aplicaFiltroPreco(listaLivrosFiltroAplicado);
+        };
+        
         if (tipoFiltro === 'remover') {
             adicionaElementos(livros);
-            filtroAplicado = '';
+            listaLivrosFiltroAplicado = '';
         };
     });
 });

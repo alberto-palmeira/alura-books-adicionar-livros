@@ -1,9 +1,10 @@
 // ---------- Funções ----------
 function adicionaElementos(livros) {
     secaoLivros.innerHTML = '';
+    
     livros.forEach(livro => {
         const disponibilidade = verificaDisponibilidade(livro);
-        
+
         secaoLivros.innerHTML +=
         `<div class="livro">
             <img class="${disponibilidade}" src="${livro.imagem}" alt="${livro.alt}" />
